@@ -9,6 +9,10 @@ export default defineConfig({
     siderWidth: 208,
     ...defaultSettings,
   },
+  dva: {
+    immer: true,
+    hmr: true,
+  },
   locale: {
     default: 'zh-CN',
     antd: true,
