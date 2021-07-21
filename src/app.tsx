@@ -4,3 +4,14 @@ import { PageLoading } from '@ant-design/pro-layout';
 export const initialStateConfig = {
   loading: <PageLoading />,
 };
+
+// export const getInitialState = () =>{
+//   return '初始的数据值'
+// }
+
+export async function getInitialState() {
+  return {
+    userName: '初始的数据值',
+    userCode: '25455',
+  };
+}
