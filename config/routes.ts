@@ -1,12 +1,17 @@
 export default [
-  { exact: true, path: '/', component: 'index' },
   {
-    path: '/List',
+    exact: true,
+    path: '/',
+    // component: 'index'
+    redirect: '/list/subpage',
+  },
+  {
+    path: '/list',
     icon: 'AreaChartOutlined',
     name: 'list',
     routes: [
       {
-        path: '/List/sub-page',
+        path: '/list/subpage',
         name: 'table-list',
         exact: true,
         component: './List',
@@ -23,6 +28,12 @@ export default [
         name: 'form-list',
         exact: true,
         component: './form',
+      },
+      {
+        path: '/form/basic-form',
+        name: 'basic-form',
+        exact: true,
+        component: './form/basic-form/basic-form',
       },
     ],
   },

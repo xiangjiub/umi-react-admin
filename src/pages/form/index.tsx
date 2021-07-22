@@ -1,5 +1,5 @@
 import ProLayout, { PageContainer } from '@ant-design/pro-layout';
-import { useModel } from 'umi';
+import { useModel, request } from 'umi';
 import { Button } from 'antd';
 
 export default () => {
@@ -8,6 +8,16 @@ export default () => {
     add: ret.increment,
     minus: ret.decrement,
   }));
+
+  const data = () =>
+    request('/api/users', {
+      method: 'get',
+      params: {
+        name: 1,
+      },
+      skipErrorHandler: true,
+    });
+
   return (
     <PageContainer>
       <div
@@ -23,6 +33,7 @@ export default () => {
           <Button onClick={minus} danger>
             minus by 1
           </Button>
+          <Button onClick={data}>请求数据</Button>
         </div>
       </div>
     </PageContainer>

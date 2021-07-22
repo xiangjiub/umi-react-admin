@@ -3,4 +3,5 @@ export default {
   'menu.list.table-list': '查询表格',
   'menu.form': '表单页',
   'menu.form.form-list': '表单控制',
+  'menu.form.basic-form': '基础表单',
 };
