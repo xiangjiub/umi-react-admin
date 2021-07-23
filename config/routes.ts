@@ -38,6 +38,17 @@ export default [
     ],
   },
   {
+    path: '/notice',
+    icon: 'NotificationOutlined',
+    name: 'notice',
+    component: './notice',
+    // routes:[
+    //   {
+    //     path: '/notice'
+    //   }
+    // ]
+  },
+  {
     component: '404',
   },
 ];
