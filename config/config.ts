@@ -3,7 +3,9 @@ import routes from './routes';
 import defaultSettings from './defaultSettings';
 export default defineConfig({
   fastRefresh: {}, // 快速刷新
-  dynamicImport: {}, // 按需加载
+  dynamicImport: {
+    loading: '@ant-design/pro-layout/es/PageLoading',
+  }, // 按需加载
   layout: {
     locale: true,
     siderWidth: 208,
