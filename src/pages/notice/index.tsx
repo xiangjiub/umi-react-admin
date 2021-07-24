@@ -8,58 +8,21 @@ import ProForm, {
   ProFormTextArea,
 } from '@ant-design/pro-form';
 import request from 'umi-request';
-import { Button } from 'antd';
+import { Button, Tooltip, message as Message } from 'antd';
 import { getNoticeList } from '@/services/notice';
 import { useRequest } from '@/.umi/plugin-request/request';
 import { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-
-const columns: ProColumns[] = [
-  {
-    title: '标题',
-    dataIndex: 'title',
-    search: false,
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    search: false,
-    ellipsis: true,
-    copyable: true,
-    // width: 800,
-  },
-  {
-    title: '状态',
-    dataIndex: 'statusId',
-    hideInTable: true,
-    valueEnum: {
-      0: { text: '全部' },
-      1: {
-        text: '创建',
-      },
-      2: {
-        text: '已经发送',
-      },
-      '-1': {
-        text: '作废',
-      },
-    },
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    valueType: 'dateTime',
-    search: false,
-  },
-  {
-    title: '级别',
-    dataIndex: 'priority',
-    search: false,
-  },
-];
+import {
+  PlusOutlined,
+  SearchOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 
 export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState();
 
   const getTableData = async (params: any) => {
     const data = await getNoticeList(params);
@@ -78,6 +41,75 @@ export default () => {
       };
     }
   };
+
+  const columns: ProColumns[] = [
+    {
+      title: '标题',
+      dataIndex: 'title',
+      search: false,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      search: false,
+      ellipsis: true,
+      copyable: true,
+      // width: 800,
+    },
+    {
+      title: '状态',
+      dataIndex: 'statusId',
+      hideInTable: true,
+      valueEnum: {
+        0: { text: '全部' },
+        1: {
+          text: '创建',
+        },
+        2: {
+          text: '已经发送',
+        },
+        '-1': {
+          text: '作废',
+        },
+      },
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      valueType: 'dateTime',
+      search: false,
+    },
+    {
+      title: '级别',
+      dataIndex: 'priority',
+      search: false,
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      render: (text, record, _, action) => [
+        <a
+          key="editable"
+          // onClick={() => {
+          //   action?.startEditable?.(record.id);
+          // }}
+        >
+          编辑
+        </a>,
+        <Tooltip title="删除">
+          <Button
+            type="link"
+            shape="circle"
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setCurrentRow(record);
+            }}
+          />
+        </Tooltip>,
+      ],
+    },
+  ];
 
   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
@@ -183,6 +215,31 @@ export default () => {
             label="主合同编号"
           />
           <ProFormTextArea width="md" name="desc" label="项目名称" />
+        </ModalForm>
+        <ModalForm
+          title="删除通知"
+          width="800px"
+          layout="horizontal"
+          visible={updateModalVisible}
+          onVisibleChange={handleUpdateModalVisible}
+          onFinish={async (values) => {
+            console.log('提交数据', values);
+            Message.success('提交成功');
+            return true;
+          }}
+        >
+          <ProFormTextArea
+            rules={[
+              {
+                required: true,
+                message: '删除原因为必填项',
+              },
+            ]}
+            width="xl"
+            name="remark"
+            label="删除原因"
+            placeholder="请输入删除原因"
+          />
         </ModalForm>
       </ProCard>
     </PageContainer>
