@@ -13,3 +13,6 @@ Start the dev server,
 ```bash
 $ yarn start
 ```
+
+
+### docker
