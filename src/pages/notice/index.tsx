@@ -97,8 +97,9 @@ export default () => {
       title: '操作',
       valueType: 'option',
       width: 150,
-      render: (text, record, _, action) => [
-        <Tooltip title="删除">
+      key: 'option',
+      render: (_, record) => [
+        <Tooltip title="删除" key={record.id}>
           <Button
             type="link"
             shape="circle"
