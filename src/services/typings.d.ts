@@ -6,7 +6,7 @@ declare namespace API {
   };
 
   type pushParmas = {
-    id: string;
+    id: string | undefined;
     reason: string;
   };
 }

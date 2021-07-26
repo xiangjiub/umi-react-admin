@@ -1,6 +1,6 @@
 import ProLayout, { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
-import type { ProColumns } from '@ant-design/pro-table';
+import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import ProForm, {
   ModalForm,
@@ -11,7 +11,7 @@ import request from 'umi-request';
 import { Button, Tooltip, message as Message } from 'antd';
 import { getNoticeList, deleteNotice } from '@/services/notice';
 import { useRequest } from '@/.umi/plugin-request/request';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   PlusOutlined,
   SearchOutlined,
@@ -31,7 +31,9 @@ export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState();
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const actionRef = useRef<ActionType>();
+
   // 获取table数据
   const getTableData = async (params: any) => {
     const data = await getNoticeList(params);
@@ -133,6 +135,7 @@ export default () => {
       <ProCard direction="column" ghost>
         <ProTable<TableListItem>
           columns={columns}
+          actionRef={actionRef}
           headerTitle="通知列表"
           // editable={{
           //     type: 'multiple',
@@ -246,7 +249,10 @@ export default () => {
               id: currentRow?.id,
               reason: values.remark,
             };
-            const isSuccess = disNotice(data);
+            const isSuccess = await disNotice(data);
+            if (isSuccess) {
+              actionRef.current?.reload();
+            }
             return isSuccess;
           }}
         >
