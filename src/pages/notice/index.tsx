@@ -5,11 +5,12 @@ import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import ProForm, {
   ModalForm,
   ProFormText,
+  ProFormSelect,
   ProFormTextArea,
 } from '@ant-design/pro-form';
 import request from 'umi-request';
 import { Button, Tooltip, message as Message } from 'antd';
-import { getNoticeList, deleteNotice } from '@/services/notice';
+import { getNoticeList, deleteNotice, addNotice } from '@/services/notice';
 import { useRequest } from '@/.umi/plugin-request/request';
 import { useRef, useState } from 'react';
 import {
@@ -56,6 +57,19 @@ export default () => {
   //删除通知
   const disNotice = async (params: API.pushParmas) => {
     const data = await deleteNotice(params);
+    const { resultType, appendData, message } = data;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      return true;
+    } else {
+      Message.error(`${message}`);
+      return false;
+    }
+  };
+
+  //新增通知
+  const addNoticeData = async (params: API.AddNoticeParams) => {
+    const data = await addNotice(params);
     const { resultType, appendData, message } = data;
     if (resultType == 0) {
       Message.success(`${message}`);
@@ -202,7 +216,7 @@ export default () => {
           ]}
         />
         <ModalForm
-          title="新建规则"
+          title="新增通知"
           width="800px"
           // trigger={
           //   <Button type="primary">
@@ -213,6 +227,7 @@ export default () => {
           visible={createModalVisible}
           onVisibleChange={handleModalVisible}
           onFinish={async (value) => {
+            // addNoticeData
             // const success = await handleAdd(value as TableListItem);
             // if (success) {
             //   handleModalVisible(false);
@@ -222,19 +237,45 @@ export default () => {
             // }
             handleModalVisible(false);
           }}
+          initialValues={{
+            priority: '普通',
+          }}
         >
-          <ProFormText
-            rules={[
-              {
-                required: true,
-                message: '规则名称为必填项',
-              },
-            ]}
-            width="xl"
-            name="name"
-            label="主合同编号"
-          />
-          <ProFormTextArea width="md" name="desc" label="项目名称" />
+          <ProForm.Group>
+            <ProFormText
+              width="md"
+              name="title"
+              label="标题"
+              placeholder="请输入标题名称"
+              rules={[
+                {
+                  required: true,
+                  message: '标题名称为必填项',
+                },
+              ]}
+            />
+            <ProFormSelect
+              width="md"
+              options={[
+                {
+                  value: '普通',
+                  label: '普通',
+                },
+                {
+                  value: '重要',
+                  label: '重要',
+                },
+                {
+                  value: '紧急',
+                  label: '紧急',
+                },
+              ]}
+              label="优先级别"
+              placeholder="请选择优先级别"
+              name="priority"
+            />
+          </ProForm.Group>
+          {/* <ProFormTextArea width="md" name="desc" label="项目名称" /> */}
         </ModalForm>
         <ModalForm
           title="删除通知"

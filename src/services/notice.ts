@@ -5,6 +5,7 @@ const prefix = 'http://192.168.1.81:8087/api';
 const Api = {
   GetNoticeList: `${prefix}/SamplingNotice/GetPageData`, // 获取通知分页列表
   deleteNotice: `${prefix}/SamplingNotice/Discard`, // 删除通知
+  AddNotice: `${prefix}/SamplingNotice/add`, //新增通知
 };
 
 // 获取通知列表
@@ -35,6 +36,17 @@ export async function deleteNotice(body: API.pushParmas) {
       ...body,
     },
     // ...(options || {}),
+    skipErrorHandler: true,
+  });
+}
+
+//新增通知
+export async function addNotice(body: API.AddNoticeParams) {
+  return request(Api.AddNotice, {
+    method: RequestEnum.POST,
+    data: {
+      ...body,
+    },
     skipErrorHandler: true,
   });
 }

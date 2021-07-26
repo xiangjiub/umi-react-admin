@@ -9,4 +9,17 @@ declare namespace API {
     id: string | undefined;
     reason: string;
   };
+
+  type AddNoticeParams = {
+    title: string;
+    priority: string;
+    attachment: string;
+    assigns: assignsItem[];
+  };
+
+  type assignsItem = {
+    depCode: string;
+    workerCode: string;
+    workerName: string;
+  };
 }
