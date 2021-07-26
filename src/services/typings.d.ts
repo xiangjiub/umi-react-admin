@@ -4,4 +4,9 @@ declare namespace API {
     pageSize?: number;
     statusId?: number;
   };
+
+  type pushParmas = {
+    id: string;
+    reason: string;
+  };
 }

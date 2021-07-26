@@ -9,7 +9,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import request from 'umi-request';
 import { Button, Tooltip, message as Message } from 'antd';
-import { getNoticeList } from '@/services/notice';
+import { getNoticeList, deleteNotice } from '@/services/notice';
 import { useRequest } from '@/.umi/plugin-request/request';
 import { useState } from 'react';
 import {
@@ -32,7 +32,7 @@ export default () => {
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState();
-
+  // 获取table数据
   const getTableData = async (params: any) => {
     const data = await getNoticeList(params);
     const { resultType, appendData } = data;
@@ -48,6 +48,19 @@ export default () => {
         success: false,
         total: appendData.totalItems,
       };
+    }
+  };
+
+  //删除通知
+  const disNotice = async (params: API.pushParmas) => {
+    const data = await deleteNotice(params);
+    const { resultType, appendData, message } = data;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      return true;
+    } else {
+      Message.error(`${message}`);
+      return false;
     }
   };
 
@@ -98,6 +111,7 @@ export default () => {
       valueType: 'option',
       width: 150,
       key: 'option',
+      align: 'center',
       render: (_, record) => [
         <Tooltip title="删除" key={record.id}>
           <Button
@@ -226,9 +240,14 @@ export default () => {
           visible={updateModalVisible}
           onVisibleChange={handleUpdateModalVisible}
           onFinish={async (values) => {
-            console.log('提交数据', values);
-            Message.success('提交成功');
-            return true;
+            // console.log('提交数据', values);
+            // Message.success('提交成功');
+            const data = {
+              id: currentRow?.id,
+              reason: values.remark,
+            };
+            const isSuccess = disNotice(data);
+            return isSuccess;
           }}
         >
           <ProFormTextArea
