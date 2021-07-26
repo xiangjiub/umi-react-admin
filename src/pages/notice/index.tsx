@@ -18,6 +18,15 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 
+export type TableListItem = {
+  id: string;
+  title: string;
+  statusId: string;
+  status: string;
+  createTime: string;
+  priority: string;
+};
+
 export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
@@ -87,15 +96,8 @@ export default () => {
     {
       title: '操作',
       valueType: 'option',
+      width: 150,
       render: (text, record, _, action) => [
-        <a
-          key="editable"
-          // onClick={() => {
-          //   action?.startEditable?.(record.id);
-          // }}
-        >
-          编辑
-        </a>,
         <Tooltip title="删除">
           <Button
             type="link"
@@ -114,7 +116,7 @@ export default () => {
   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <ProCard direction="column" ghost>
-        <ProTable
+        <ProTable<TableListItem>
           columns={columns}
           headerTitle="通知列表"
           // editable={{
