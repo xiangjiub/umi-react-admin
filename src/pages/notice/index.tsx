@@ -2,6 +2,7 @@ import ProLayout, { PageContainer } from '@ant-design/pro-layout';
 import ProCard from '@ant-design/pro-card';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
+import ProList from '@ant-design/pro-list';
 import ProForm, {
   ModalForm,
   ProFormText,
@@ -9,10 +10,14 @@ import ProForm, {
   ProFormTextArea,
 } from '@ant-design/pro-form';
 import request from 'umi-request';
-import { Button, Tooltip, message as Message } from 'antd';
+import type { FormInstance } from 'antd';
+import { Button, Tooltip, message as Message, Form } from 'antd';
 import { getNoticeList, deleteNotice, addNotice } from '@/services/notice';
+import { getWorkerList } from '@/services/worker';
+import { getCityAndHub } from '@/services/dep';
+import { guid } from '@/utils/common';
 import { useRequest } from '@/.umi/plugin-request/request';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   PlusOutlined,
   SearchOutlined,
@@ -28,13 +33,16 @@ export type TableListItem = {
   priority: string;
 };
 
+const workData: any = [];
+type DataItem = typeof workData[number];
 export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const [workdataSource, setWorkDataSource] = useState<DataItem[]>(workData);
   const actionRef = useRef<ActionType>();
-
+  const formRef = useRef<FormInstance>();
   // 获取table数据
   const getTableData = async (params: any) => {
     const data = await getNoticeList(params);
@@ -78,6 +86,18 @@ export default () => {
       Message.error(`${message}`);
       return false;
     }
+  };
+
+  //获取单位信息
+  const getdeplist = async () => {
+    const data = await getCityAndHub();
+    console.log(data, '单位数据');
+  };
+
+  const getMock = () => {
+    request('/api/users/1').then((res) => {
+      console.log(res, '唱的那首');
+    });
   };
 
   const columns: ProColumns[] = [
@@ -218,6 +238,7 @@ export default () => {
         <ModalForm
           title="新增通知"
           width="800px"
+          formRef={formRef}
           // trigger={
           //   <Button type="primary">
           //     新建表单
@@ -226,6 +247,9 @@ export default () => {
           layout={'vertical'}
           visible={createModalVisible}
           onVisibleChange={handleModalVisible}
+          onValuesChange={(_, values) => {
+            console.log(values);
+          }}
           onFinish={async (value) => {
             // addNoticeData
             // const success = await handleAdd(value as TableListItem);
@@ -235,7 +259,19 @@ export default () => {
             //     actionRef.current.reload();
             //   }
             // }
-            handleModalVisible(false);
+            console.log(value, '提交的值');
+            const data = {
+              title: value.title,
+              priority: value.priority,
+              attachment: '',
+              assigns: [...workdataSource],
+            };
+            const res = await addNoticeData(data);
+            if (res) {
+              handleModalVisible(false);
+            } else {
+              handleModalVisible(true);
+            }
           }}
           initialValues={{
             priority: '普通',
@@ -275,11 +311,115 @@ export default () => {
               name="priority"
             />
           </ProForm.Group>
-          {/* <ProFormTextArea width="md" name="desc" label="项目名称" /> */}
+          <ProForm.Group>
+            <ProFormSelect
+              width="md"
+              fieldProps={{
+                labelInValue: true,
+              }}
+              request={async () => {
+                let params = await getCityAndHub();
+
+                let res: any[] = [];
+                params.map((item: any) => {
+                  let temp: any = {};
+                  temp['label'] = item.DepName;
+                  temp['value'] = item.DepCode;
+                  res.push(temp);
+                });
+                return res;
+              }}
+              label="单位"
+              placeholder="请选择单位"
+              name="dep"
+            />
+            <ProFormSelect
+              width="sm"
+              fieldProps={{
+                labelInValue: true,
+              }}
+              request={async () => {
+                let params = await getWorkerList();
+
+                let res: any[] = [];
+                params.map((item: any) => {
+                  let temp: any = {};
+                  temp['label'] = item.Name;
+                  temp['value'] = item.WorkerCode;
+                  res.push(temp);
+                });
+                return res;
+              }}
+              label="通知人员"
+              placeholder="请选择通知人员"
+              name="noticeworks"
+            />
+
+            <Button
+              type="primary"
+              onClick={() => {
+                const depCode = formRef?.current?.getFieldValue('dep')?.key;
+                const depName = formRef?.current?.getFieldValue('dep')?.label;
+                const workerCode =
+                  formRef?.current?.getFieldValue('noticeworks')?.key;
+                const workerName =
+                  formRef?.current?.getFieldValue('noticeworks')?.label;
+
+                const noticeInfo = `单位：${depName}、  通知人员：${workerName}`;
+                let res: any[] = [];
+                res = [
+                  ...workdataSource,
+                  {
+                    useid: guid(),
+                    content: noticeInfo,
+                    image:
+                      'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                    depCode,
+                    depName,
+                    workerCode,
+                    workerName,
+                  },
+                ];
+                setWorkDataSource(res);
+              }}
+            >
+              添加
+            </Button>
+          </ProForm.Group>
+          <ProList
+            dataSource={workdataSource}
+            showActions="hover"
+            rowKey="useid"
+            metas={{
+              title: {
+                dataIndex: 'content',
+              },
+              avatar: {
+                dataIndex: 'image',
+                editable: false,
+              },
+              actions: {
+                render: (text, row, index, action) => [
+                  <a
+                    onClick={() => {
+                      // action?.startEditable(row.id);
+                      const res = workdataSource.filter(
+                        (item: any) => item.useid != row.useid,
+                      );
+                      setWorkDataSource(res);
+                    }}
+                    key="link"
+                  >
+                    删除
+                  </a>,
+                ],
+              },
+            }}
+          />
         </ModalForm>
         <ModalForm
           title="删除通知"
-          width="800px"
+          width="900px"
           layout="horizontal"
           visible={updateModalVisible}
           onVisibleChange={handleUpdateModalVisible}

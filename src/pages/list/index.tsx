@@ -28,7 +28,7 @@ export default () => {
       <ProCard direction="column" ghost gutter={[0, 16]}>
         <ProCard
           style={{ height: 200 }}
-          children={[user.userCode, user.userName]}
+          children={[user.WorkerCode, user.WorkerName]}
         />
         <ProCard gutter={16} ghost style={{ height: 200 }}>
           <ProCard colSpan={16} />

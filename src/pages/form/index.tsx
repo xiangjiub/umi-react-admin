@@ -4,6 +4,8 @@ import { Button } from 'antd';
 
 export default () => {
   const message = useModel('demo');
+  const dep = useModel('dep');
+
   const { add, minus } = useModel('counter', (ret) => ({
     add: ret.increment,
     minus: ret.decrement,

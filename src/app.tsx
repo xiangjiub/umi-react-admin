@@ -11,7 +11,9 @@ export const initialStateConfig = {
 
 export async function getInitialState() {
   return {
-    userName: '初始的数据值',
-    userCode: '25455',
+    WorkerCode: '34230000005509',
+    WorkerName: '李崇华',
+    DepCode: '3423',
+    DepName: '盐源县',
   };
 }
