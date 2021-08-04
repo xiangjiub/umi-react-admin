@@ -11,17 +11,23 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import request from 'umi-request';
 import type { FormInstance } from 'antd';
-import { Button, Tooltip, message as Message, Form } from 'antd';
-import { getNoticeList, deleteNotice, addNotice } from '@/services/notice';
+import { Button, Tooltip, message as Message, Form, Divider } from 'antd';
+import {
+  getNoticeList,
+  deleteNotice,
+  addNotice,
+  getItemList,
+} from '@/services/notice';
 import { getWorkerList } from '@/services/worker';
 import { getCityAndHub } from '@/services/dep';
 import { guid } from '@/utils/common';
 import { useRequest } from '@/.umi/plugin-request/request';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, Fragment, useEffect } from 'react';
 import {
   PlusOutlined,
   SearchOutlined,
   DeleteOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 
 export type TableListItem = {
@@ -33,14 +39,36 @@ export type TableListItem = {
   priority: string;
 };
 
-const workData: any = [];
-type DataItem = typeof workData[number];
+type NoticeItem = {
+  id: string | undefined;
+  title: string;
+  priority: string;
+  assigns: assignsItem[];
+};
+
+type assignsItem = {
+  id: string;
+  useid: string;
+  content: string;
+  image: string;
+  depCode: string;
+  depName: string;
+  workerCode: string;
+  workerName: string;
+};
+
 export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
-  const [workdataSource, setWorkDataSource] = useState<DataItem[]>(workData);
+
+  const [updateItemData, setUpdateItemData] = useState<NoticeItem>({
+    id: '',
+    title: '',
+    priority: '',
+    assigns: [],
+  });
   const actionRef = useRef<ActionType>();
   const formRef = useRef<FormInstance>();
   // 获取table数据
@@ -87,6 +115,36 @@ export default () => {
       return false;
     }
   };
+
+  // 获取编辑通知明细id
+  const getNoticeItem = async (id?: string) => {
+    const result = await getItemList(id).then();
+    // console.log(result,'返回的数据');
+    const { resultType, appendData, message } = result;
+    if (resultType == 0) {
+      const resWorkData = appendData?.assigns.map((item: any) => {
+        const noticeInfo = `单位：${item.depName}、  通知人员：${item.workerName}`;
+        item.useid = guid();
+        item.content = noticeInfo;
+        item.image =
+          'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg';
+        return item;
+      });
+
+      const data = {
+        id,
+        title: appendData?.title,
+        priority: appendData?.priority,
+        assigns: resWorkData,
+      };
+      setUpdateItemData(data);
+      handleModalVisible(true);
+    }
+  };
+
+  useEffect(() => {
+    console.log('执行了');
+  }, [updateItemData]);
 
   //获取单位信息
   const getdeplist = async () => {
@@ -149,17 +207,31 @@ export default () => {
       key: 'option',
       align: 'center',
       render: (_, record) => [
-        <Tooltip title="删除" key={record.id}>
-          <Button
-            type="link"
-            shape="circle"
-            icon={<DeleteOutlined />}
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          />
-        </Tooltip>,
+        <Fragment key="action">
+          <Tooltip title="编辑">
+            {/* <a type="link" onClick={() => {handleModalVisible(true);setCurrentRow(record)}}><EditOutlined /></a> */}
+            <a
+              type="link"
+              onClick={() => {
+                getNoticeItem(record?.id);
+              }}
+            >
+              <EditOutlined />
+            </a>
+          </Tooltip>
+          <Divider type="vertical"></Divider>
+          <Tooltip title="删除">
+            <a
+              type="link"
+              onClick={() => {
+                handleUpdateModalVisible(true);
+                setCurrentRow(record);
+              }}
+            >
+              <DeleteOutlined />
+            </a>
+          </Tooltip>
+        </Fragment>,
       ],
     },
   ];
@@ -236,7 +308,7 @@ export default () => {
           ]}
         />
         <ModalForm
-          title="新增通知"
+          title={updateItemData?.id ? '编辑通知' : '新增通知'}
           width="800px"
           formRef={formRef}
           // trigger={
@@ -248,33 +320,26 @@ export default () => {
           visible={createModalVisible}
           onVisibleChange={handleModalVisible}
           onValuesChange={(_, values) => {
-            console.log(values);
+            console.log('FROM值的改变', values);
           }}
           onFinish={async (value) => {
-            // addNoticeData
-            // const success = await handleAdd(value as TableListItem);
-            // if (success) {
-            //   handleModalVisible(false);
-            //   if (actionRef.current) {
-            //     actionRef.current.reload();
-            //   }
-            // }
-            console.log(value, '提交的值');
-            const data = {
-              title: value.title,
-              priority: value.priority,
-              attachment: '',
-              assigns: [...workdataSource],
-            };
-            const res = await addNoticeData(data);
-            if (res) {
-              handleModalVisible(false);
+            if (updateItemData?.id) {
+              //编辑
             } else {
-              handleModalVisible(true);
+              //新增
+              const data = {
+                title: value.title,
+                priority: value.priority,
+                attachment: '',
+                assigns: updateItemData?.assigns,
+              };
+              const res = await addNoticeData(data);
+              if (res) {
+                handleModalVisible(false);
+              } else {
+                handleModalVisible(true);
+              }
             }
-          }}
-          initialValues={{
-            priority: '普通',
           }}
         >
           <ProForm.Group>
@@ -282,6 +347,10 @@ export default () => {
               width="md"
               name="title"
               label="标题"
+              // initialValue={updateItemData?.title}
+              // request = {() =>{
+              //   return updateItemData.title
+              // }}
               placeholder="请输入标题名称"
               rules={[
                 {
@@ -309,6 +378,7 @@ export default () => {
               label="优先级别"
               placeholder="请选择优先级别"
               name="priority"
+              // initialValue={updateItemData?.priority}
             />
           </ProForm.Group>
           <ProForm.Group>
@@ -368,7 +438,7 @@ export default () => {
                 const noticeInfo = `单位：${depName}、  通知人员：${workerName}`;
                 let res: any[] = [];
                 res = [
-                  ...workdataSource,
+                  ...updateItemData?.assigns,
                   {
                     useid: guid(),
                     content: noticeInfo,
@@ -380,14 +450,18 @@ export default () => {
                     workerName,
                   },
                 ];
-                setWorkDataSource(res);
+
+                setUpdateItemData({
+                  ...updateItemData,
+                  assigns: res,
+                });
               }}
             >
               添加
             </Button>
           </ProForm.Group>
           <ProList
-            dataSource={workdataSource}
+            dataSource={updateItemData?.assigns}
             showActions="hover"
             rowKey="useid"
             metas={{
@@ -403,10 +477,13 @@ export default () => {
                   <a
                     onClick={() => {
                       // action?.startEditable(row.id);
-                      const res = workdataSource.filter(
+                      const res = updateItemData.assigns.filter(
                         (item: any) => item.useid != row.useid,
                       );
-                      setWorkDataSource(res);
+                      setUpdateItemData({
+                        ...updateItemData,
+                        assigns: res,
+                      });
                     }}
                     key="link"
                   >

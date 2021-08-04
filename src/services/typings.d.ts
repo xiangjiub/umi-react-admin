@@ -14,7 +14,7 @@ declare namespace API {
     title: string;
     priority: string;
     attachment: string;
-    assigns: assignsItem[];
+    assigns?: assignsItem[];
   };
 
   type assignsItem = {
