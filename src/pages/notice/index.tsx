@@ -278,7 +278,7 @@ export default () => {
     {
       title: '操作',
       valueType: 'option',
-      width: 150,
+      width: 180,
       key: 'option',
       align: 'center',
       render: (_, record) => [
@@ -567,7 +567,7 @@ export default () => {
         </ModalForm>
         <ModalForm
           title="删除通知"
-          width="900px"
+          width="800px"
           layout="horizontal"
           visible={deleteModalVisible}
           onVisibleChange={handleDeleModalVisible}
