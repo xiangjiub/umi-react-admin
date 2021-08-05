@@ -10,7 +10,10 @@ import {
   CheckOutlined,
 } from '@ant-design/icons';
 
-export default function useColumns(handleTaskModalVisible: any) {
+export default function useColumns(
+  handleTaskModalVisible: any,
+  setCurrentRow: any,
+) {
   const columns: ProColumns[] = [
     {
       title: '任务名称',
@@ -47,11 +50,11 @@ export default function useColumns(handleTaskModalVisible: any) {
       dataIndex: 'requirements',
       search: false,
     },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      search: false,
-    },
+    // {
+    //   title: '创建时间',
+    //   dataIndex: 'createTime',
+    //   search: false,
+    // },
     {
       title: '状态',
       dataIndex: 'status',
@@ -68,6 +71,7 @@ export default function useColumns(handleTaskModalVisible: any) {
             <a
               type="link"
               onClick={() => {
+                setCurrentRow(record);
                 handleTaskModalVisible(true);
               }}
             >

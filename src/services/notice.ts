@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { RequestEnum } from '@/utils/httpEnum';
 
-const prefix = 'http://192.168.1.196:5300/api';
+const prefix = 'http://192.168.1.13:5300/api';
 const Api = {
   GetNoticeList: `${prefix}/SamplingNotice/GetPageData`, // 获取通知分页列表
   deleteNotice: `${prefix}/SamplingNotice/Discard`, // 删除通知
@@ -11,6 +11,7 @@ const Api = {
   AddNoticeAssign: `${prefix}/SamplingNotice/addAssign`, //添加通知人员
   UpdateNotice: `${prefix}/SamplingNotice/update`, //更新通知
   PushNotice: `${prefix}/SamplingNotice/publish`, // 发布通知
+  GetNoticeSlect: `${prefix}/SamplingNotice/SelectList`, //通知select
 };
 
 // 获取通知列表
@@ -91,5 +92,12 @@ export async function pushNotice(id: string) {
   return request(`${Api.PushNotice}?id=${id}`, {
     method: RequestEnum.PUT,
     skipErrorHandler: true,
+  });
+}
+
+//获取选择的通知
+export async function getNoticeSlect() {
+  return request(Api.GetNoticeSlect, {
+    method: RequestEnum.GET,
   });
 }

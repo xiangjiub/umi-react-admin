@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table';
 import useColumns from './components/TaskColumns';
 import { useRef, useState } from 'react';
 import type { ActionType } from '@ant-design/pro-table';
-import { Button } from 'antd';
+import { Button, message as Message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import TaskModel from './components/TaskModel';
 
@@ -21,10 +21,25 @@ type TableListItem = {
   status: string;
 };
 
+type TaskModelForm = {
+  noticeId: string;
+  name: string;
+  sendTo: string;
+  shippingAddress: string;
+  contactName: string;
+  contactPhone: string;
+  requirements: string;
+};
+
 export default () => {
   const actionRef = useRef<ActionType>();
   const [TaskModalVisible, handleTaskModalVisible] = useState<boolean>(false);
-  const { columns, getTaskPageList } = useColumns(handleTaskModalVisible);
+  const [currentRow, setCurrentRow] = useState<TableListItem>();
+  const { columns, getTaskPageList } = useColumns(
+    handleTaskModalVisible,
+    setCurrentRow,
+  );
+
   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <ProCard direction="column" ghost>
@@ -45,13 +60,24 @@ export default () => {
             <Button
               type="primary"
               key="primary"
-              // onClick={() => handleModalVisible(true)}
+              onClick={() => handleTaskModalVisible(true)}
             >
               <PlusOutlined /> 新建
             </Button>,
           ]}
         />
-        <TaskModel ModalVisible={TaskModalVisible} />
+        <TaskModel
+          ModalVisible={TaskModalVisible}
+          onVisibleChange={(visible: boolean) => {
+            if (!visible) {
+              setCurrentRow(undefined);
+            }
+            handleTaskModalVisible(visible);
+          }}
+          values={currentRow || {}}
+          setCurrentRow={setCurrentRow}
+          actionRef={actionRef}
+        />
       </ProCard>
     </PageContainer>
   );

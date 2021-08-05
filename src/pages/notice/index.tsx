@@ -567,7 +567,7 @@ export default () => {
         </ModalForm>
         <ModalForm
           title="删除通知"
-          width="800px"
+          width="760px"
           layout="horizontal"
           visible={deleteModalVisible}
           onVisibleChange={handleDeleModalVisible}
@@ -592,7 +592,6 @@ export default () => {
                 message: '删除原因为必填项',
               },
             ]}
-            width="xl"
             name="remark"
             label="删除原因"
             placeholder="请输入删除原因"
