@@ -49,6 +49,12 @@ export default [
     // ]
   },
   {
+    path: '/task',
+    icon: 'home',
+    name: 'task',
+    component: './task',
+  },
+  {
     component: '404',
   },
 ];
