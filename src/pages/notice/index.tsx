@@ -17,6 +17,10 @@ import {
   deleteNotice,
   addNotice,
   getItemList,
+  deleteNoticeAssign,
+  addNoticeAssign,
+  updateNotice,
+  pushNotice,
 } from '@/services/notice';
 import { getWorkerList } from '@/services/worker';
 import { getCityAndHub } from '@/services/dep';
@@ -28,6 +32,7 @@ import {
   SearchOutlined,
   DeleteOutlined,
   EditOutlined,
+  CheckOutlined,
 } from '@ant-design/icons';
 
 export type TableListItem = {
@@ -43,6 +48,8 @@ type NoticeItem = {
   id: string | undefined;
   title: string;
   priority: string;
+  dep: string;
+  noticeworks: string;
   assigns: assignsItem[];
 };
 
@@ -59,14 +66,15 @@ type assignsItem = {
 
 export default () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [deleteModalVisible, handleDeleModalVisible] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
 
   const [updateItemData, setUpdateItemData] = useState<NoticeItem>({
     id: '',
     title: '',
     priority: '',
+    dep: '',
+    noticeworks: '',
     assigns: [],
   });
   const actionRef = useRef<ActionType>();
@@ -119,7 +127,6 @@ export default () => {
   // 获取编辑通知明细id
   const getNoticeItem = async (id?: string) => {
     const result = await getItemList(id).then();
-    // console.log(result,'返回的数据');
     const { resultType, appendData, message } = result;
     if (resultType == 0) {
       const resWorkData = appendData?.assigns.map((item: any) => {
@@ -135,26 +142,94 @@ export default () => {
         id,
         title: appendData?.title,
         priority: appendData?.priority,
+        dep: '',
+        noticeworks: '',
         assigns: resWorkData,
       };
+
       setUpdateItemData(data);
+      formRef?.current?.setFieldsValue({
+        id,
+        title: appendData?.title,
+        priority: appendData?.priority,
+      });
+      handleModalVisible(true);
+      return {
+        data,
+        success: true,
+      };
+    }
+  };
+
+  // 删除通知明细
+  const deleteNoticeItem = async (noticeId: string, assignId: string) => {
+    const result = await deleteNoticeAssign({ noticeId, assignId });
+    const { resultType, appendData, message } = result;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      getNoticeItem(noticeId);
+    } else {
+      Message.error(`${message}`);
+    }
+  };
+
+  //更新通知
+  const updateNoticeInfo = async (data: API.UpdateNoticeParams) => {
+    const result = await updateNotice(data);
+    const { resultType, appendData, message } = result;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      handleModalVisible(false);
+      actionRef.current?.reload();
+    } else {
+      Message.error(`${message}`);
       handleModalVisible(true);
     }
   };
 
+  //提交通知
+  const pushAction = async (id: string) => {
+    const result = await pushNotice(id);
+    const { resultType, appendData, message } = result;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      actionRef.current?.reload();
+    } else {
+      Message.error(`${message}`);
+    }
+  };
+
+  type useNotice = {
+    useid: string;
+    content: string;
+    image: string;
+  };
+
+  // 新增通知明细数据
+  const addNoticeItem = async (data: API.AddNoticeAssignParams & useNotice) => {
+    const result = await addNoticeAssign(data).then();
+    const { resultType, appendData, message } = result;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      getNoticeItem(data.noticeId);
+    } else {
+      Message.error(`${message}`);
+    }
+  };
+
   useEffect(() => {
-    console.log('执行了');
+    // console.log('执行了');
   }, [updateItemData]);
 
   //获取单位信息
   const getdeplist = async () => {
     const data = await getCityAndHub();
-    console.log(data, '单位数据');
+    // console.log(data, '单位数据');
   };
 
   const getMock = () => {
     request('/api/users/1').then((res) => {
-      console.log(res, '唱的那首');
+      // console.log(res, '唱的那首');
     });
   };
 
@@ -220,11 +295,22 @@ export default () => {
             </a>
           </Tooltip>
           <Divider type="vertical"></Divider>
+          <Tooltip title="提交">
+            <a
+              type="link"
+              onClick={() => {
+                pushAction(record?.id);
+              }}
+            >
+              <CheckOutlined />
+            </a>
+          </Tooltip>
+          <Divider type="vertical"></Divider>
           <Tooltip title="删除">
             <a
               type="link"
               onClick={() => {
-                handleUpdateModalVisible(true);
+                handleDeleModalVisible(true);
                 setCurrentRow(record);
               }}
             >
@@ -243,44 +329,6 @@ export default () => {
           columns={columns}
           actionRef={actionRef}
           headerTitle="通知列表"
-          // editable={{
-          //     type: 'multiple',
-          // }}
-          // request={async (params = {}, sort, filter) => {
-          //   console.log(sort, filter);
-          //   return request<{
-          //     data: any[];
-          //   }>('https://proapi.azurewebsites.net/github/issues', {
-          //     params,
-          //   });
-          // }}
-          // request = {
-          //   async (
-          //     // 第一个参数 params 查询表单和 params 参数的结合
-          //     // 第一个参数中一定会有 pageSize 和  current ，这两个参数是 antd 的规范
-          //     params: {T:any}
-          //   ) => {
-
-          //     const result = await getNoticeList({...params})
-          //     console.log(result,'返回的数据',params);
-          //     const {resultType,appendData} = result
-          //     if(resultType == 0){
-          //       return {
-          //         data: appendData.items,
-          //         // success 请返回 true，
-          //         // 不然 table 会停止解析数据，即使有数据
-          //         success: true,
-          //         // 不传会使用 data 的长度，如果是分页一定要传
-          //         total: appendData.totalItems,
-          //       };
-          //     }else{
-          //       return {
-          //         success: false,
-          //       };
-          //     }
-
-          //   }
-          // }
           request={(params = {}) => {
             return getTableData(params);
           }}
@@ -288,14 +336,6 @@ export default () => {
           pagination={{
             pageSize: 10,
           }}
-          // search={{
-          //   defaultCollapsed: false,
-          //   labelWidth: 'auto',
-          //   optionRender: (searchConfig, formProps, dom) => [
-          //     ...dom.reverse(),
-          //     <Button key="out">导出</Button>,
-          //   ],
-          // }}
           bordered
           toolBarRender={() => [
             <Button
@@ -308,23 +348,48 @@ export default () => {
           ]}
         />
         <ModalForm
-          title={updateItemData?.id ? '编辑通知' : '新增通知'}
+          title={
+            formRef?.current?.getFieldValue('id') ? '编辑通知' : '新增通知'
+          }
           width="800px"
           formRef={formRef}
-          // trigger={
-          //   <Button type="primary">
-          //     新建表单
-          //   </Button>
-          // }
           layout={'vertical'}
           visible={createModalVisible}
-          onVisibleChange={handleModalVisible}
+          onVisibleChange={(visible: boolean) => {
+            if (!visible) {
+              setUpdateItemData({
+                id: '',
+                title: '',
+                priority: '',
+                assigns: [],
+                dep: '',
+                noticeworks: '',
+              });
+
+              formRef?.current?.setFieldsValue({
+                id: '',
+                title: '',
+                priority: '',
+                dep: { value: undefined, label: undefined },
+                noticeworks: { value: undefined, label: undefined },
+              });
+              handleModalVisible(visible);
+            }
+          }}
           onValuesChange={(_, values) => {
-            console.log('FROM值的改变', values);
+            // console.log('FROM值的改变', values);
           }}
           onFinish={async (value) => {
-            if (updateItemData?.id) {
+            if (formRef?.current?.getFieldValue('id')) {
               //编辑
+
+              const data = {
+                id: formRef?.current?.getFieldValue('id'),
+                title: value.title,
+                priority: value.priority,
+                attachment: '',
+              };
+              updateNoticeInfo(data);
             } else {
               //新增
               const data = {
@@ -347,10 +412,6 @@ export default () => {
               width="md"
               name="title"
               label="标题"
-              // initialValue={updateItemData?.title}
-              // request = {() =>{
-              //   return updateItemData.title
-              // }}
               placeholder="请输入标题名称"
               rules={[
                 {
@@ -378,7 +439,6 @@ export default () => {
               label="优先级别"
               placeholder="请选择优先级别"
               name="priority"
-              // initialValue={updateItemData?.priority}
             />
           </ProForm.Group>
           <ProForm.Group>
@@ -436,25 +496,30 @@ export default () => {
                   formRef?.current?.getFieldValue('noticeworks')?.label;
 
                 const noticeInfo = `单位：${depName}、  通知人员：${workerName}`;
-                let res: any[] = [];
-                res = [
-                  ...updateItemData?.assigns,
-                  {
-                    useid: guid(),
-                    content: noticeInfo,
-                    image:
-                      'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-                    depCode,
-                    depName,
-                    workerCode,
-                    workerName,
-                  },
-                ];
 
-                setUpdateItemData({
-                  ...updateItemData,
-                  assigns: res,
-                });
+                const data = {
+                  noticeId: formRef?.current?.getFieldValue('id'),
+                  useid: guid(),
+                  content: noticeInfo,
+                  image:
+                    'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                  depCode,
+                  depName,
+                  workerCode,
+                  workerName,
+                };
+
+                if (formRef?.current?.getFieldValue('id')) {
+                  //编辑状态
+                  addNoticeItem(data);
+                } else {
+                  //新增状态
+                  const res: any = [...updateItemData?.assigns, data];
+                  setUpdateItemData({
+                    ...updateItemData,
+                    assigns: res,
+                  });
+                }
               }}
             >
               添加
@@ -473,17 +538,23 @@ export default () => {
                 editable: false,
               },
               actions: {
-                render: (text, row, index, action) => [
+                render: (text: any, row: any, index: any, action: any) => [
                   <a
                     onClick={() => {
-                      // action?.startEditable(row.id);
-                      const res = updateItemData.assigns.filter(
-                        (item: any) => item.useid != row.useid,
-                      );
-                      setUpdateItemData({
-                        ...updateItemData,
-                        assigns: res,
-                      });
+                      if (formRef?.current?.getFieldValue('id')) {
+                        deleteNoticeItem(
+                          formRef?.current?.getFieldValue('id'),
+                          row?.id,
+                        );
+                      } else {
+                        const res = updateItemData.assigns.filter(
+                          (item: any) => item.useid != row.useid,
+                        );
+                        setUpdateItemData({
+                          ...updateItemData,
+                          assigns: res,
+                        });
+                      }
                     }}
                     key="link"
                   >
@@ -498,8 +569,8 @@ export default () => {
           title="删除通知"
           width="900px"
           layout="horizontal"
-          visible={updateModalVisible}
-          onVisibleChange={handleUpdateModalVisible}
+          visible={deleteModalVisible}
+          onVisibleChange={handleDeleModalVisible}
           onFinish={async (values) => {
             // console.log('提交数据', values);
             // Message.success('提交成功');

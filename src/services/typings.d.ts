@@ -22,4 +22,24 @@ declare namespace API {
     workerCode: string;
     workerName: string;
   };
+
+  interface DeleteNoticeAssignParams {
+    noticeId: string; //通知id
+    assignId: string; //通知人员id
+  }
+
+  interface AddNoticeAssignParams {
+    noticeId: string; //通知id
+    depCode: string; //通知单位
+    depName: string;
+    workerCode: string; //通知人员
+    workerName: string;
+  }
+
+  interface UpdateNoticeParams {
+    id: string;
+    title: string;
+    priority: string;
+    attachment: string;
+  }
 }
