@@ -7,6 +7,8 @@ const Api = {
   SamplingTaskList: `${prefix}/SamplingTask/getPageData`,
   SampleTaskcreate: `${prefix}/SamplingTask/create`,
   SampleTaskEdit: `${prefix}/SamplingTask/update`,
+  DeleteSamplingTask: `${prefix}/SamplingTask/discard`, //删除任务
+  SamplingTaskPublish: `${prefix}/SamplingTask/publish`,
 };
 
 //获取任务分页数据
@@ -39,6 +41,22 @@ export async function sampleTaskEdit(
 ) {
   return request([Api.SampleTaskEdit, id].join('/'), {
     method: RequestEnum.PUT,
+    data: { ...body },
+  });
+}
+
+//删除任务
+export async function deleteSamplingTask(body: TaskApi.DeleteTaskParams) {
+  return request(Api.DeleteSamplingTask, {
+    method: RequestEnum.DELETE,
+    data: { ...body },
+  });
+}
+
+//任务发布
+export async function samplingTaskPublish(body: TaskApi.PushTaskParams) {
+  return request(Api.SamplingTaskPublish, {
+    method: RequestEnum.POST,
     data: { ...body },
   });
 }

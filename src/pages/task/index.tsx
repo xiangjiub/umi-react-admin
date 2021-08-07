@@ -7,6 +7,7 @@ import type { ActionType } from '@ant-design/pro-table';
 import { Button, message as Message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import TaskModel from './components/TaskModel';
+import DelModel from './components/DelModel';
 
 type TableListItem = {
   id: string;
@@ -34,10 +35,13 @@ type TaskModelForm = {
 export default () => {
   const actionRef = useRef<ActionType>();
   const [TaskModalVisible, handleTaskModalVisible] = useState<boolean>(false);
+  const [DelModelVisible, handleDeleModalVisible] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const { columns, getTaskPageList } = useColumns(
     handleTaskModalVisible,
     setCurrentRow,
+    handleDeleModalVisible,
+    actionRef,
   );
 
   return (
@@ -73,6 +77,18 @@ export default () => {
               setCurrentRow(undefined);
             }
             handleTaskModalVisible(visible);
+          }}
+          values={currentRow || {}}
+          setCurrentRow={setCurrentRow}
+          actionRef={actionRef}
+        />
+        <DelModel
+          ModalVisible={DelModelVisible}
+          onVisibleChange={(visible: boolean) => {
+            if (!visible) {
+              setCurrentRow(undefined);
+            }
+            handleDeleModalVisible(visible);
           }}
           values={currentRow || {}}
           setCurrentRow={setCurrentRow}

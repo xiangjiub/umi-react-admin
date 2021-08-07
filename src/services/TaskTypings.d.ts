@@ -28,4 +28,15 @@ declare namespace TaskApi {
     depName: string;
     taskId: string;
   };
+
+  //删除参数
+  type DeleteTaskParams = {
+    id: string;
+    reason: string;
+  };
+
+  //发布参数
+  type PushTaskParams = {
+    taskId: string; // 任务id
+  };
 }

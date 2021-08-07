@@ -1,7 +1,7 @@
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import { getPageData } from '@/services/task';
+import { getPageData, samplingTaskPublish } from '@/services/task';
 import { Fragment } from 'react';
-import { Tooltip } from 'antd';
+import { Tooltip, Divider, Button, Popconfirm, message as Message } from 'antd';
 import {
   PlusOutlined,
   SearchOutlined,
@@ -9,10 +9,13 @@ import {
   EditOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
+import { Icon } from '@iconify/react';
 
 export default function useColumns(
   handleTaskModalVisible: any,
   setCurrentRow: any,
+  handleDeleModalVisible: any,
+  actionRef: any,
 ) {
   const columns: ProColumns[] = [
     {
@@ -65,6 +68,7 @@ export default function useColumns(
       dataIndex: 'action',
       search: false,
       align: 'center',
+      width: 220,
       render: (_, record) => [
         <Fragment key="action">
           <Tooltip title="编辑">
@@ -77,10 +81,43 @@ export default function useColumns(
             >
               <EditOutlined />
             </a>
-            {/* <a type="link" onClick={() => {getNoticeItem(record?.id);}}>
-                <EditOutlined />
-              </a> */}
           </Tooltip>
+          <Divider type="vertical"></Divider>
+          <Tooltip title="采集计划">
+            <a type="link">
+              <Icon icon="bx:bx-collection" style={{ width: '16px' }} />
+            </a>
+          </Tooltip>
+          <Divider type="vertical"></Divider>
+
+          <Tooltip title="发布">
+            <a
+              type="link"
+              onClick={() => {
+                push(record);
+              }}
+            >
+              <Icon icon="ic:round-publish" style={{ width: '16px' }} />
+            </a>
+          </Tooltip>
+          <Divider type="vertical"></Divider>
+          <Tooltip title="采集计划明细">
+            <a type="link">
+              <Icon icon="mdi:eye" style={{ width: '16px' }} />
+            </a>
+          </Tooltip>
+          <Divider type="vertical"></Divider>
+          <Popconfirm
+            title="你确定删除吗？"
+            placement="leftTop"
+            onConfirm={() => Delete(record)}
+          >
+            <Tooltip placement="top" title="删除">
+              <a href="#">
+                <DeleteOutlined />
+              </a>
+            </Tooltip>
+          </Popconfirm>
         </Fragment>,
       ],
     },
@@ -102,6 +139,29 @@ export default function useColumns(
         success: false,
         total: appendData.totalItems,
       };
+    }
+  };
+
+  //删除操作
+  const Delete = (record: any) => {
+    setCurrentRow(record);
+    handleDeleModalVisible(true);
+  };
+
+  //发布任务
+  const push = async (record: any) => {
+    const data = {
+      taskId: record.id,
+    };
+    const result = await samplingTaskPublish(data).then();
+    const { resultType, message, appendData } = result;
+    if (resultType == 0) {
+      Message.success(`${message}`);
+      if (actionRef.current) {
+        actionRef.current.reload();
+      }
+    } else {
+      Message.error(`${message}`);
     }
   };
 
