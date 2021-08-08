@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { RequestEnum } from '@/utils/httpEnum';
 
-const prefix = 'http://192.168.1.13:5300/api';
+const prefix = 'http://192.168.1.14:5300/api';
 const Api = {
   GetNoticeList: `${prefix}/SamplingNotice/GetPageData`, // 获取通知分页列表
   deleteNotice: `${prefix}/SamplingNotice/Discard`, // 删除通知

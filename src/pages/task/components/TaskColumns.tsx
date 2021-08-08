@@ -16,6 +16,7 @@ export default function useColumns(
   setCurrentRow: any,
   handleDeleModalVisible: any,
   actionRef: any,
+  handlePlanModelVisible: any,
 ) {
   const columns: ProColumns[] = [
     {
@@ -84,7 +85,13 @@ export default function useColumns(
           </Tooltip>
           <Divider type="vertical"></Divider>
           <Tooltip title="采集计划">
-            <a type="link">
+            <a
+              type="link"
+              onClick={() => {
+                setCurrentRow(record);
+                handlePlanModelVisible(true);
+              }}
+            >
               <Icon icon="bx:bx-collection" style={{ width: '16px' }} />
             </a>
           </Tooltip>
