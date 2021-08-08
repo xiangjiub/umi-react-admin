@@ -5,19 +5,90 @@ import ProCard from '@ant-design/pro-card';
 import { getWorkerList } from '@/services/worker';
 import { getCityAndHub } from '@/services/dep';
 import { addCollectPlan, getCollectPlanList } from '@/services/CollectPlan';
-import { SettingOutlined } from '@ant-design/icons';
-import { Button, Modal, message as Message, Collapse } from 'antd';
+import { SettingOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Modal,
+  message as Message,
+  Collapse,
+  Tooltip,
+  Divider,
+} from 'antd';
 import type { FormInstance } from 'antd';
 import getCollectPlanItem from './planList';
 import './style.less';
+
 const CollectPlanModel: React.FC<any> = (props) => {
   const genExtra = () => (
-    <SettingOutlined
-      onClick={(event) => {
-        // If you don't want click extra trigger collapse, you can prevent this:
-        event.stopPropagation();
+    <ProForm
+      layout="horizontal"
+      className="extraIn"
+      formRef={formRef}
+      onFinish={async (values) => {
+        addplan(values);
       }}
-    />
+      submitter={{
+        render: (props, doms) => {
+          return [];
+        },
+      }}
+    >
+      <ProForm.Group>
+        <ProFormSelect
+          width="sm"
+          fieldProps={{
+            labelInValue: true,
+          }}
+          request={async () => {
+            let params = await getCityAndHub();
+
+            let res: any[] = [];
+            params.map((item: any) => {
+              let temp: any = {};
+              temp['label'] = item.DepName;
+              temp['value'] = item.DepCode;
+              res.push(temp);
+            });
+            return res;
+          }}
+          label="单位"
+          placeholder="请选择单位"
+          name="dep"
+          rules={[{ required: true, message: '请选择单位!' }]}
+        />
+        <ProFormSelect
+          width="sm"
+          fieldProps={{
+            labelInValue: true,
+          }}
+          request={async () => {
+            let params = await getWorkerList();
+
+            let res: any[] = [];
+            params.map((item: any) => {
+              let temp: any = {};
+              temp['label'] = item.Name;
+              temp['value'] = item.WorkerCode;
+              res.push(temp);
+            });
+            return res;
+          }}
+          label="采集人员"
+          placeholder="请选择采集人员"
+          name="assignWorker"
+          rules={[{ required: true, message: '请选择采集人员' }]}
+        />
+        {/* <Button block htmlType="submit">
+        增加
+      </Button> */}
+        <Tooltip placement="top" title="编辑">
+          <Button type="link" shape="circle">
+            <EditOutlined />
+          </Button>
+          <Divider type="vertical" />
+        </Tooltip>
+      </ProForm.Group>
+    </ProForm>
   );
   const { Panel } = Collapse;
   const formRef = useRef<FormInstance>();
@@ -147,7 +218,7 @@ const CollectPlanModel: React.FC<any> = (props) => {
         bordered={false}
         expandIconPosition="left"
       >
-        <Panel header="This is panel header 1" key="1" extra={genExtra()}>
+        <Panel header="" key="1" extra={genExtra()}>
           <p>你好1</p>
         </Panel>
         <Panel header="This is panel header 2" key="2">

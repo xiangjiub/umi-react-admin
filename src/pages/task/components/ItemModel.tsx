@@ -31,6 +31,7 @@ const ItemModel: React.FC<any> = (props) => {
   });
 
   useEffect(() => {
+    console.log('查看了明细');
     setTaskState({
       name: props.values?.name,
       requestFrom: props.values?.requestFrom,
@@ -53,7 +54,6 @@ const ItemModel: React.FC<any> = (props) => {
       onVisibleChange={props.onVisibleChange}
       onFinish={async (value: any) => {
         props.onVisibleChange(false);
-        props.setCurrentRow(undefined);
       }}
     >
       <Descriptions title={TaskFormState.status}>
