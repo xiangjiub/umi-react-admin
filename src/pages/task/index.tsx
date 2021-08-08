@@ -9,6 +9,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import TaskModel from './components/TaskModel';
 import DelModel from './components/DelModel';
 import CollectPlanModel from './components/CollectPlanModel';
+import ItemModel from './components/ItemModel';
 
 type TableListItem = {
   id: string;
@@ -38,6 +39,7 @@ export default () => {
   const [TaskModalVisible, handleTaskModalVisible] = useState<boolean>(false);
   const [DelModelVisible, handleDeleModalVisible] = useState<boolean>(false);
   const [PlanModelVisible, handlePlanModelVisible] = useState<boolean>(false);
+  const [ItemModelVisible, handleItemModelVisible] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const { columns, getTaskPageList } = useColumns(
     handleTaskModalVisible,
@@ -45,6 +47,7 @@ export default () => {
     handleDeleModalVisible,
     actionRef,
     handlePlanModelVisible,
+    handleItemModelVisible,
   );
 
   return (
@@ -104,6 +107,18 @@ export default () => {
               setCurrentRow(undefined);
             }
             handlePlanModelVisible(visible);
+          }}
+          values={currentRow || {}}
+          setCurrentRow={setCurrentRow}
+          actionRef={actionRef}
+        />
+        <ItemModel
+          ModalVisible={ItemModelVisible}
+          onVisibleChange={(visible: boolean) => {
+            if (!visible) {
+              setCurrentRow(undefined);
+            }
+            handleItemModelVisible(visible);
           }}
           values={currentRow || {}}
           setCurrentRow={setCurrentRow}

@@ -1,13 +1,25 @@
 import React, { useRef } from 'react';
 import type { FC } from 'react';
 import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form';
+import ProCard from '@ant-design/pro-card';
 import { getWorkerList } from '@/services/worker';
 import { getCityAndHub } from '@/services/dep';
 import { addCollectPlan, getCollectPlanList } from '@/services/CollectPlan';
-import { Button, Modal, message as Message } from 'antd';
+import { SettingOutlined } from '@ant-design/icons';
+import { Button, Modal, message as Message, Collapse } from 'antd';
 import type { FormInstance } from 'antd';
-
+import getCollectPlanItem from './planList';
+import './style.less';
 const CollectPlanModel: React.FC<any> = (props) => {
+  const genExtra = () => (
+    <SettingOutlined
+      onClick={(event) => {
+        // If you don't want click extra trigger collapse, you can prevent this:
+        event.stopPropagation();
+      }}
+    />
+  );
+  const { Panel } = Collapse;
   const formRef = useRef<FormInstance>();
 
   const handleCancel = () => {
@@ -29,18 +41,8 @@ const CollectPlanModel: React.FC<any> = (props) => {
     const { resultType, appendData, message } = result?.data;
     if (resultType == 0) {
       Message.success(`${message}`);
-      getCollectPlanItem();
     } else {
       Message.error(`${message}`);
-    }
-  };
-
-  const getCollectPlanItem = async () => {
-    const result = await getCollectPlanList(props.values?.id).then();
-    const { resultType, appendData, message } = result?.data;
-    if (resultType == 0) {
-    } else {
-      Message.error(message);
     }
   };
 
@@ -118,8 +120,43 @@ const CollectPlanModel: React.FC<any> = (props) => {
         props.onVisibleChange(false);
         props.setCurrentRow(undefined);
       }}
+      className="collectPlanModel"
     >
       <AddPlanFrom />
+      {/* <ProCard
+        title="可折叠"
+        headerBordered
+        collapsible
+        defaultCollapsed
+        onCollapse={(collapse) => console.log(collapse)}
+        extra={
+          <Button
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            提交
+          </Button>
+        }
+      >
+        内容
+      </ProCard> */}
+      <Collapse
+        defaultActiveKey={['1']}
+        bordered={false}
+        expandIconPosition="left"
+      >
+        <Panel header="This is panel header 1" key="1" extra={genExtra()}>
+          <p>你好1</p>
+        </Panel>
+        <Panel header="This is panel header 2" key="2">
+          <p>你好2</p>
+        </Panel>
+        <Panel header="This is panel header 3" key="3">
+          <p>你好23</p>
+        </Panel>
+      </Collapse>
     </Modal>
   );
 };

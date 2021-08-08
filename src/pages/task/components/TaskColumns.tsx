@@ -17,6 +17,7 @@ export default function useColumns(
   handleDeleModalVisible: any,
   actionRef: any,
   handlePlanModelVisible: any,
+  handleItemModelVisible: any,
 ) {
   const columns: ProColumns[] = [
     {
@@ -109,7 +110,13 @@ export default function useColumns(
           </Tooltip>
           <Divider type="vertical"></Divider>
           <Tooltip title="采集计划明细">
-            <a type="link">
+            <a
+              type="link"
+              onClick={() => {
+                setCurrentRow(record);
+                handleItemModelVisible(true);
+              }}
+            >
               <Icon icon="mdi:eye" style={{ width: '16px' }} />
             </a>
           </Tooltip>
