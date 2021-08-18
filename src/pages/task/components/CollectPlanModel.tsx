@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import type { FormInstance } from 'antd';
 import getCollectPlanItem from './planList';
-import './style.less';
+// import './style.less';
 
 const CollectPlanModel: React.FC<any> = (props) => {
   const genExtra = () => (
@@ -183,7 +183,7 @@ const CollectPlanModel: React.FC<any> = (props) => {
 
   return (
     <Modal
-      width="820px"
+      width="900px"
       title="采集计划"
       visible={props.ModalVisible}
       onCancel={handleCancel}
@@ -213,21 +213,26 @@ const CollectPlanModel: React.FC<any> = (props) => {
       >
         内容
       </ProCard> */}
-      <Collapse
-        defaultActiveKey={['1']}
-        bordered={false}
-        expandIconPosition="left"
+      <ProCard
+        title=""
+        headerBordered
+        collapsible
+        defaultCollapsed
+        onCollapse={(collapse) => console.log(collapse)}
+        extra={
+          genExtra()
+          // <Button
+          //   size="small"
+          //   onClick={(e) => {
+          //     e.stopPropagation();
+          //   }}
+          // >
+          //   提交
+          // </Button>
+        }
       >
-        <Panel header="" key="1" extra={genExtra()}>
-          <p>你好1</p>
-        </Panel>
-        <Panel header="This is panel header 2" key="2">
-          <p>你好2</p>
-        </Panel>
-        <Panel header="This is panel header 3" key="3">
-          <p>你好23</p>
-        </Panel>
-      </Collapse>
+        内容
+      </ProCard>
     </Modal>
   );
 };
