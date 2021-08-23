@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import type { FC } from 'react';
 import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form';
 import ProCard from '@ant-design/pro-card';
@@ -19,77 +19,75 @@ import getCollectPlanItem from './planList';
 // import './style.less';
 
 const CollectPlanModel: React.FC<any> = (props) => {
-  const genExtra = () => (
-    <ProForm
-      layout="horizontal"
-      className="extraIn"
-      formRef={formRef}
-      onFinish={async (values) => {
-        addplan(values);
-      }}
-      submitter={{
-        render: (props, doms) => {
-          return [];
-        },
-      }}
-    >
-      <ProForm.Group>
-        <ProFormSelect
-          width="sm"
-          fieldProps={{
-            labelInValue: true,
-          }}
-          request={async () => {
-            let params = await getCityAndHub();
+  // const genExtra = () => (
+  //   <ProForm
+  //     layout="horizontal"
+  //     className="extraIn"
+  //     formRef={formRef}
+  //     onFinish={async (values) => {
+  //       addplan(values);
+  //     }}
+  //     submitter={{
+  //       render: (props, doms) => {
+  //         return [];
+  //       },
+  //     }}
+  //   >
+  //     <ProForm.Group>
+  //       <ProFormSelect
+  //         width="sm"
+  //         fieldProps={{
+  //           labelInValue: true,
+  //         }}
+  //         request={async () => {
+  //           let params = await getCityAndHub();
 
-            let res: any[] = [];
-            params.map((item: any) => {
-              let temp: any = {};
-              temp['label'] = item.DepName;
-              temp['value'] = item.DepCode;
-              res.push(temp);
-            });
-            return res;
-          }}
-          label="单位"
-          placeholder="请选择单位"
-          name="dep"
-          rules={[{ required: true, message: '请选择单位!' }]}
-        />
-        <ProFormSelect
-          width="sm"
-          fieldProps={{
-            labelInValue: true,
-          }}
-          request={async () => {
-            let params = await getWorkerList();
+  //           let res: any[] = [];
+  //           params.map((item: any) => {
+  //             let temp: any = {};
+  //             temp['label'] = item.DepName;
+  //             temp['value'] = item.DepCode;
+  //             res.push(temp);
+  //           });
+  //           return res;
+  //         }}
+  //         label="单位"
+  //         placeholder="请选择单位"
+  //         name="dep"
+  //         rules={[{ required: true, message: '请选择单位!' }]}
+  //       />
+  //       <ProFormSelect
+  //         width="sm"
+  //         fieldProps={{
+  //           labelInValue: true,
+  //         }}
+  //         request={async () => {
+  //           let params = await getWorkerList();
 
-            let res: any[] = [];
-            params.map((item: any) => {
-              let temp: any = {};
-              temp['label'] = item.Name;
-              temp['value'] = item.WorkerCode;
-              res.push(temp);
-            });
-            return res;
-          }}
-          label="采集人员"
-          placeholder="请选择采集人员"
-          name="assignWorker"
-          rules={[{ required: true, message: '请选择采集人员' }]}
-        />
-        {/* <Button block htmlType="submit">
-        增加
-      </Button> */}
-        <Tooltip placement="top" title="编辑">
-          <Button type="link" shape="circle">
-            <EditOutlined />
-          </Button>
-          <Divider type="vertical" />
-        </Tooltip>
-      </ProForm.Group>
-    </ProForm>
-  );
+  //           let res: any[] = [];
+  //           params.map((item: any) => {
+  //             let temp: any = {};
+  //             temp['label'] = item.Name;
+  //             temp['value'] = item.WorkerCode;
+  //             res.push(temp);
+  //           });
+  //           return res;
+  //         }}
+  //         label="采集人员"
+  //         placeholder="请选择采集人员"
+  //         name="assignWorker"
+  //         rules={[{ required: true, message: '请选择采集人员' }]}
+  //       />
+
+  //       <Tooltip placement="top" title="编辑">
+  //         <Button type="link" shape="circle">
+  //           <EditOutlined />
+  //         </Button>
+  //         <Divider type="vertical" />
+  //       </Tooltip>
+  //     </ProForm.Group>
+  //   </ProForm>
+  // );
   const { Panel } = Collapse;
   const formRef = useRef<FormInstance>();
 
@@ -109,7 +107,8 @@ const CollectPlanModel: React.FC<any> = (props) => {
       assignWorkerCode: values?.assignWorker.key,
     };
     const result = await addCollectPlan(data).then();
-    const { resultType, appendData, message } = result?.data;
+    console.log(result, '结果');
+    const { resultType, appendData, message } = result;
     if (resultType == 0) {
       Message.success(`${message}`);
     } else {
@@ -181,6 +180,37 @@ const CollectPlanModel: React.FC<any> = (props) => {
     </ProForm>
   );
 
+  function PlanList() {
+    const [PlanListData, setPlanListData] = useState<any>([]);
+    //获取列表数据
+    const getData = async () => {
+      const data: any = await getCollectPlanItem(props.values?.id);
+      setPlanListData(data);
+    };
+
+    useEffect(() => {
+      console.log('执行了生命周期PlanList中');
+      getData();
+    }, [props.values?.id]);
+
+    const listItems = PlanListData.map((item: any) => (
+      <ProCard
+        key={item.id}
+        title={item.assignworkerstr}
+        headerBordered
+        collapsible
+        defaultCollapsed
+        onCollapse={(collapse) => console.log(collapse)}
+        // extra={
+        //   genExtra()
+        // }
+      >
+        内容
+      </ProCard>
+    ));
+    return listItems;
+  }
+
   return (
     <Modal
       width="900px"
@@ -213,26 +243,7 @@ const CollectPlanModel: React.FC<any> = (props) => {
       >
         内容
       </ProCard> */}
-      <ProCard
-        title=""
-        headerBordered
-        collapsible
-        defaultCollapsed
-        onCollapse={(collapse) => console.log(collapse)}
-        extra={
-          genExtra()
-          // <Button
-          //   size="small"
-          //   onClick={(e) => {
-          //     e.stopPropagation();
-          //   }}
-          // >
-          //   提交
-          // </Button>
-        }
-      >
-        内容
-      </ProCard>
+      <PlanList />
     </Modal>
   );
 };

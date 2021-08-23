@@ -5,7 +5,7 @@ import { guid } from '@/utils/common';
 //获取采集计划列表
 const getCollectPlanItem = async (taskId: string): Promise<any[]> => {
   const result = await getCollectPlanList(taskId).then();
-  const { resultType, appendData, message } = result?.data;
+  const { resultType, appendData, message } = result;
   if (resultType == 0) {
     const res = appendData.map(function (item: any) {
       item.taskId = taskId;
