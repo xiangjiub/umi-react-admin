@@ -16,6 +16,8 @@ import {
 } from 'antd';
 import type { FormInstance } from 'antd';
 import getCollectPlanItem from './planList';
+import UseLevel from '@/components/Base/Level';
+import UseVarity from '@/components/Base/Varity';
 // import './style.less';
 
 const CollectPlanModel: React.FC<any> = (props) => {
@@ -205,7 +207,8 @@ const CollectPlanModel: React.FC<any> = (props) => {
         //   genExtra()
         // }
       >
-        内容
+        <UseLevel />
+        <UseVarity />
       </ProCard>
     ));
     return listItems;
