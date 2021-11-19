@@ -26,6 +26,8 @@ type TaskModelForm = {
   requirements: string;
 };
 
+import { getNoticeSelect } from '@/services/notice';
+
 const TaskModel: React.FC<any> = (props) => {
   const formRef = useRef<FormInstance>();
   const { initialState } = useModel('@@initialState');
@@ -50,8 +52,39 @@ const TaskModel: React.FC<any> = (props) => {
       width="800px"
       layout="vertical"
       visible={props.ModalVisible}
-      onVisibleChange={props.onVisibleChange}
-      // onFinish={props.onFinish}
+      // onVisibleChange={(visible: boolean) => {
+      //   props.handleModalVisible(visible)
+      // }}
+      onVisibleChange={props.handleModalVisible}
+      onFinish={props.onSubmit}
+    >
+      <ProForm.Group>
+        <ProFormSelect
+          fieldProps={{
+            labelInValue: true,
+          }}
+          request={async () => {
+            let result = await getNoticeSelect();
+            if (result?.resultType == 0) {
+              let res: any[] = [];
+              result?.appendData?.map((item: any) => {
+                let temp: any = {};
+                temp['label'] = item.name;
+                temp['value'] = item.id;
+                res.push(temp);
+              });
+              return res;
+            } else {
+              return [];
+            }
+          }}
+          width="xl"
+          name="noticeId"
+          placeholder="请选择通知"
+          label="通知"
+        />
+      </ProForm.Group>
+      {/* onVisibleChange={props.onVisibleChange}
       onFinish={async (value: TaskModelForm) => {
         if (props.values?.id) {
           //编辑
@@ -93,8 +126,7 @@ const TaskModel: React.FC<any> = (props) => {
             Message.error(`${message}`);
           }
         }
-      }}
-    >
+      }} */}
       <ProFormSelect
         name="noticeId"
         label="通知"

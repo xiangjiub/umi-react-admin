@@ -78,6 +78,7 @@ export default () => {
         />
         <TaskModel
           ModalVisible={TaskModalVisible}
+          handleModalVisible={handleTaskModalVisible}
           onVisibleChange={(visible: boolean) => {
             if (!visible) {
               setCurrentRow(undefined);

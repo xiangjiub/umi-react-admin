@@ -9,7 +9,7 @@ import {
   EditOutlined,
   CheckOutlined,
 } from '@ant-design/icons';
-import { Icon } from '@iconify/react';
+// import { Icon } from '@iconify/react';
 
 export default function useColumns(
   handleTaskModalVisible: any,
@@ -93,7 +93,7 @@ export default function useColumns(
                 handlePlanModelVisible(true);
               }}
             >
-              <Icon icon="bx:bx-collection" style={{ width: '16px' }} />
+              {/* <Icon icon="bx:bx-collection" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
           <Divider type="vertical"></Divider>
@@ -105,7 +105,7 @@ export default function useColumns(
                 push(record);
               }}
             >
-              <Icon icon="ic:round-publish" style={{ width: '16px' }} />
+              {/* <Icon icon="ic:round-publish" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
           <Divider type="vertical"></Divider>
@@ -117,7 +117,7 @@ export default function useColumns(
                 handleItemModelVisible(true);
               }}
             >
-              <Icon icon="mdi:eye" style={{ width: '16px' }} />
+              {/* <Icon icon="mdi:eye" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
           <Divider type="vertical"></Divider>

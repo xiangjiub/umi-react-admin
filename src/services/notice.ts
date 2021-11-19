@@ -11,6 +11,7 @@ const Api = {
   AddNoticeAssign: `${prefix}/SamplingNotice/addAssign`, //添加通知人员
   UpdateNotice: `${prefix}/SamplingNotice/update`, //更新通知
   PushNotice: `${prefix}/SamplingNotice/publish`, // 发布通知
+  GetNoticeSelectList: `${prefix}/SamplingNotice/SelectList`, //获取选择的通知
   GetNoticeSlect: `${prefix}/SamplingNotice/SelectList`, //通知select
 };
 
@@ -99,5 +100,13 @@ export async function pushNotice(id: string) {
 export async function getNoticeSlect() {
   return request(Api.GetNoticeSlect, {
     method: RequestEnum.GET,
+  });
+}
+
+// 获取选择通知select
+export async function getNoticeSelect() {
+  return request(`${Api.GetNoticeSelectList}`, {
+    method: RequestEnum.GET,
+    skipErrorHandler: true,
   });
 }

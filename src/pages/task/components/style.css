@@ -1,0 +1,29 @@
+.collectPlanModel .ant-collapse-item {
+  border-bottom: 1px solid #d7d7d7 !important;
+}
+.collectPlanModel .ant-collapse-item .ant-collapse-header {
+  line-height: 50px !important;
+  min-height: 50px !important;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 0px !important;
+}
+.collectPlanModel .ant-collapse-item .ant-collapse-header .anticon.anticon-right.ant-collapse-arrow {
+  margin-top: 5px !important;
+}
+.collectPlanModel .ant-collapse-item .ant-collapse-header .ant-collapse-extra .extraIn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+}
+.collectPlanModel .ant-collapse-item .ant-collapse-content {
+  clear: both !important;
+}
+.collectPlanModel .ant-collapse-content-box {
+  padding: 16px !important;
+}
+.collectPlanModel .ant-collapse-content-box .ant-form-item {
+  margin-bottom: 10px;
+}
