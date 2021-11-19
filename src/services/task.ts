@@ -1,7 +1,7 @@
 import { request } from 'umi';
 import { RequestEnum } from '@/utils/httpEnum';
 
-const prefix = 'http://192.168.1.14:5300/api';
+const prefix = 'http://192.168.1.94:5300/api';
 
 const Api = {
   SamplingTaskList: `${prefix}/SamplingTask/getPageData`,
