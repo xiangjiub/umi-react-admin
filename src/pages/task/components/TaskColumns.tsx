@@ -8,6 +8,9 @@ import {
   DeleteOutlined,
   EditOutlined,
   CheckOutlined,
+  VerticalAlignTopOutlined,
+  EyeOutlined,
+  AlignCenterOutlined,
 } from '@ant-design/icons';
 // import { Icon } from '@iconify/react';
 
@@ -93,6 +96,7 @@ export default function useColumns(
                 handlePlanModelVisible(true);
               }}
             >
+              <AlignCenterOutlined />
               {/* <Icon icon="bx:bx-collection" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
@@ -105,6 +109,7 @@ export default function useColumns(
                 push(record);
               }}
             >
+              <VerticalAlignTopOutlined />
               {/* <Icon icon="ic:round-publish" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
@@ -117,6 +122,7 @@ export default function useColumns(
                 handleItemModelVisible(true);
               }}
             >
+              <EyeOutlined />
               {/* <Icon icon="mdi:eye" style={{ width: '16px' }} /> */}
             </a>
           </Tooltip>
