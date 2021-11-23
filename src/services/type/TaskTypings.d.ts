@@ -24,8 +24,8 @@ declare namespace TaskApi {
     shippingAddress: string;
     contactName: string;
     contactPhone: string;
-    depCode: string;
-    depName: string;
+    depCode?: string;
+    depName?: string;
     taskId: string;
   };
 

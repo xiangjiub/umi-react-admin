@@ -6,4 +6,5 @@ export default {
   'menu.form.basic-form': '基础表单',
   'menu.notice': '通知列表展示',
   'menu.task': '取样任务',
+  'menu.task.task-action': '取样任务操作',
 };

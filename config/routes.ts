@@ -52,7 +52,19 @@ export default [
     path: '/task',
     icon: 'home',
     name: 'task',
-    component: './task',
+    routes: [
+      {
+        path: '/task/action',
+        name: 'task-action',
+        exact: true,
+        component: './task',
+      },
+      {
+        path: '/task/list',
+        exact: true,
+        component: './task',
+      },
+    ],
   },
   {
     component: '404',

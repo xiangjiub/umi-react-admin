@@ -9,6 +9,7 @@ const Api = {
   SampleTaskEdit: `${prefix}/SamplingTask/update`,
   DeleteSamplingTask: `${prefix}/SamplingTask/discard`, //删除任务
   SamplingTaskPublish: `${prefix}/SamplingTask/publish`,
+  GetDepList: `${prefix}/DemandDep/list`, //需求单位列表
 };
 
 //获取任务分页数据
@@ -58,5 +59,12 @@ export async function samplingTaskPublish(body: TaskApi.PushTaskParams) {
   return request(Api.SamplingTaskPublish, {
     method: RequestEnum.POST,
     data: { ...body },
+  });
+}
+
+// 需求单位列表
+export async function GetDemandDepList() {
+  return request(Api.GetDepList, {
+    method: RequestEnum.GET,
   });
 }
