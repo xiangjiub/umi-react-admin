@@ -31,7 +31,7 @@ const ItemModel: React.FC<any> = (props) => {
   });
 
   useEffect(() => {
-    console.log('查看了明细');
+    // console.log('查看了明细');
     setTaskState({
       name: props.values?.name,
       requestFrom: props.values?.requestFrom,

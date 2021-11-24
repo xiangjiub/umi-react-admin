@@ -60,9 +60,9 @@ export default [
         component: './task',
       },
       {
-        path: '/task/list',
+        path: '/task/list/:id?',
         exact: true,
-        component: './task',
+        component: './task/taskList',
       },
     ],
   },

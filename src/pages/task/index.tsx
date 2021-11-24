@@ -10,6 +10,7 @@ import TaskModel from './components/TaskModel';
 import DelModel from './components/DelModel';
 import CollectPlanModel from './components/CollectPlanModel';
 import ItemModel from './components/ItemModel';
+import { useModel } from 'umi';
 
 type TableListItem = {
   id: string;
@@ -50,6 +51,9 @@ export default () => {
     handleItemModelVisible,
   );
 
+  const { initialState } = useModel('@@initialState');
+  const { ...user } = initialState;
+
   return (
     <PageContainer content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。">
       <ProCard direction="column" ghost>
@@ -58,7 +62,7 @@ export default () => {
           actionRef={actionRef}
           headerTitle="取样任务"
           request={(params = {}) => {
-            return getTaskPageList(params);
+            return getTaskPageList({ ...params, depCode: user.DepCode });
           }}
           rowKey="id"
           pagination={{

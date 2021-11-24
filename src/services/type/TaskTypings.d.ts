@@ -2,6 +2,7 @@ declare namespace TaskApi {
   type TaskPageParams = {
     current?: number;
     pageSize?: number;
+    depCode?: string;
   };
 
   type CreateSampleTaskParams = {
@@ -39,4 +40,25 @@ declare namespace TaskApi {
   type PushTaskParams = {
     taskId: string; // 任务id
   };
+
+  type AddCollectPlanParams = {
+    taskId: string | undefined;
+    collectDep: string;
+    collectFullDep: string;
+    collectDepName: string;
+    assignWorker: string;
+    assignWorkerCode: string;
+    items: any[];
+  };
 }
+
+type CollectPlanChild = {
+  itemId: string;
+  varityCode: string;
+  varityName: string;
+  levelCode: string;
+  levelName: string;
+  weight: number;
+  require: string;
+  editPlanItem: boolean;
+};

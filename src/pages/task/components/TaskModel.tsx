@@ -36,7 +36,7 @@ const TaskModel: React.FC<any> = (props) => {
   const { ...user } = initialState;
 
   useEffect(() => {
-    console.log('更新了', props.values);
+    // console.log('更新了', props.values);
     props.values?.id
       ? formRef?.current?.setFieldsValue({
           noticeId: {

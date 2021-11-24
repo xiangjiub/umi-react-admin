@@ -10,6 +10,9 @@ const Api = {
   DeleteSamplingTask: `${prefix}/SamplingTask/discard`, //删除任务
   SamplingTaskPublish: `${prefix}/SamplingTask/publish`,
   GetDepList: `${prefix}/DemandDep/list`, //需求单位列表
+  SamplingTaskItem: `${prefix}/SamplingTask/item`, //任务明细
+  AddCollectPlan: `${prefix}/CollectPlan/add`, //新增采集计划
+  CollectPlanList: `${prefix}/CollectPlan/list`, //获取采集计划列表
 };
 
 //获取任务分页数据
@@ -18,7 +21,7 @@ export async function getPageData(
   options?: { [key: string]: any },
 ) {
   return request(
-    `${Api.SamplingTaskList}?pi=${body.current}&ps=${body.pageSize}`,
+    `${Api.SamplingTaskList}?pi=${body.current}&ps=${body.pageSize}&depCode=${body.depCode}`,
     {
       method: RequestEnum.GET,
       ...(options || {}),
@@ -65,6 +68,30 @@ export async function samplingTaskPublish(body: TaskApi.PushTaskParams) {
 // 需求单位列表
 export async function GetDemandDepList() {
   return request(Api.GetDepList, {
+    method: RequestEnum.GET,
+  });
+}
+
+//获取任务明细
+export async function samplingTaskItem(id: string) {
+  return request([Api.SamplingTaskItem, id].join('/'), {
+    method: RequestEnum.GET,
+  });
+}
+
+// 新增采集计划
+export async function addCollectPlan(body: TaskApi.AddCollectPlanParams) {
+  return request(Api.AddCollectPlan, {
+    method: RequestEnum.POST,
+    data: {
+      ...body,
+    },
+  });
+}
+
+//获取采集计划列表
+export async function getCollectPlanList(taskId: string) {
+  return request([Api.CollectPlanList, taskId].join('/'), {
     method: RequestEnum.GET,
   });
 }

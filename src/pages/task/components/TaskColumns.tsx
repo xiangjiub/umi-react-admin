@@ -1,3 +1,4 @@
+import { Link } from 'umi';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import { getPageData, samplingTaskPublish } from '@/services/task';
 import { Fragment } from 'react';
@@ -89,16 +90,9 @@ export default function useColumns(
           </Tooltip>
           <Divider type="vertical"></Divider>
           <Tooltip title="采集计划">
-            <a
-              type="link"
-              onClick={() => {
-                setCurrentRow(record);
-                handlePlanModelVisible(true);
-              }}
-            >
+            <Link to={`/task/list/${record.id}`}>
               <AlignCenterOutlined />
-              {/* <Icon icon="bx:bx-collection" style={{ width: '16px' }} /> */}
-            </a>
+            </Link>
           </Tooltip>
           <Divider type="vertical"></Divider>
 
