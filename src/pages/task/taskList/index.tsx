@@ -12,6 +12,7 @@ import { getCityAndHub } from '@/services/dep';
 import { getWorkerSelect } from '@/services/worker';
 import { PlusOutlined } from '@ant-design/icons';
 import CollectList from './CollectList';
+import './style.less';
 
 type TaskItemType = {
   id: string;
@@ -171,10 +172,9 @@ export default (props: any) => {
             />
           </ProForm.Group>
         </ProForm>
-        <CollectList
-          taskId={taskId}
-          style={{ marginTop: '100px' }}
-        ></CollectList>
+        <div style={{ marginTop: '10px' }} className="useCollect">
+          <CollectList taskId={taskId} />
+        </div>
       </ProCard>
     </PageContainer>
   );
