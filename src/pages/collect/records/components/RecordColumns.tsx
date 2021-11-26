@@ -81,7 +81,7 @@ export default function useColumns() {
 
   //获取分页参数
   const getpages = async (params: any) => {
-    console.log(params);
+    // console.log(params);
     const data = await getSampleLeafCollectPage(params).then();
     const { resultType, appendData } = data;
     if (resultType == 0) {

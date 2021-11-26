@@ -6,6 +6,7 @@ const prefix = 'http://192.168.1.94:5300/api';
 const Api = {
   GetSampleLeafCollectPage: `${prefix}/LeafCollect/getPageData`, // 获取采集录入分页列表
   GetLeafCollectStatus: `${prefix}/LeafCollect/statusList`, //采集状态
+  GetDepPlanCollect: `${prefix}/CollectPlan/depplans`, // 获取单位采集信息
 };
 
 // 获取采集录入分页列表
@@ -36,6 +37,13 @@ export async function getSampleLeafCollectPage(
 //获取采集状态
 export async function getLeafCollectStatus() {
   return request(Api.GetLeafCollectStatus, {
+    method: RequestEnum.GET,
+  });
+}
+
+//获取单位采集信息
+export async function getDepPlanCollect(depCode: string) {
+  return request(Api.GetDepPlanCollect + `?depCode=${depCode}`, {
     method: RequestEnum.GET,
   });
 }
