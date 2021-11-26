@@ -484,46 +484,49 @@ export default () => {
               placeholder="请选择通知人员"
               name="noticeworks"
             />
-
-            <Button
-              type="primary"
-              onClick={() => {
-                const depCode = formRef?.current?.getFieldValue('dep')?.key;
-                const depName = formRef?.current?.getFieldValue('dep')?.label;
-                const workerCode =
-                  formRef?.current?.getFieldValue('noticeworks')?.key;
-                const workerName =
-                  formRef?.current?.getFieldValue('noticeworks')?.label;
-
-                const noticeInfo = `单位：${depName}、  通知人员：${workerName}`;
-
-                const data = {
-                  noticeId: formRef?.current?.getFieldValue('id'),
-                  useid: guid(),
-                  content: noticeInfo,
-                  image:
-                    'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
-                  depCode,
-                  depName,
-                  workerCode,
-                  workerName,
-                };
-
-                if (formRef?.current?.getFieldValue('id')) {
-                  //编辑状态
-                  addNoticeItem(data);
-                } else {
-                  //新增状态
-                  const res: any = [...updateItemData?.assigns, data];
-                  setUpdateItemData({
-                    ...updateItemData,
-                    assigns: res,
-                  });
-                }
-              }}
+            <div
+              style={{ height: '86px', display: 'flex', alignItems: 'center' }}
             >
-              添加
-            </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  const depCode = formRef?.current?.getFieldValue('dep')?.key;
+                  const depName = formRef?.current?.getFieldValue('dep')?.label;
+                  const workerCode =
+                    formRef?.current?.getFieldValue('noticeworks')?.key;
+                  const workerName =
+                    formRef?.current?.getFieldValue('noticeworks')?.label;
+
+                  const noticeInfo = `单位：${depName}、  通知人员：${workerName}`;
+
+                  const data = {
+                    noticeId: formRef?.current?.getFieldValue('id'),
+                    useid: guid(),
+                    content: noticeInfo,
+                    image:
+                      'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
+                    depCode,
+                    depName,
+                    workerCode,
+                    workerName,
+                  };
+
+                  if (formRef?.current?.getFieldValue('id')) {
+                    //编辑状态
+                    addNoticeItem(data);
+                  } else {
+                    //新增状态
+                    const res: any = [...updateItemData?.assigns, data];
+                    setUpdateItemData({
+                      ...updateItemData,
+                      assigns: res,
+                    });
+                  }
+                }}
+              >
+                添加
+              </Button>
+            </div>
           </ProForm.Group>
           <ProList
             dataSource={updateItemData?.assigns}

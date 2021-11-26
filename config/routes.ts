@@ -67,6 +67,25 @@ export default [
     ],
   },
   {
+    path: '/collect',
+    icon: 'home',
+    name: 'collect',
+    routes: [
+      {
+        path: '/collect/records',
+        name: 'collect-records',
+        exact: true,
+        component: './collect/records',
+      },
+      {
+        path: '/collect/plan',
+        name: 'collect-plan',
+        exact: true,
+        component: './collect/plan',
+      },
+    ],
+  },
+  {
     component: '404',
   },
 ];

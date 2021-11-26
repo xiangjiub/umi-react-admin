@@ -7,4 +7,7 @@ export default {
   'menu.notice': '通知列表展示',
   'menu.task': '取样任务',
   'menu.task.task-action': '取样任务操作',
+  'menu.collect': '样烟采集',
+  'menu.collect.collect-plan': '样烟采集计划',
+  'menu.collect.collect-records': '样烟采集记录',
 };

@@ -11,9 +11,14 @@ export const initialStateConfig = {
 
 export async function getInitialState() {
   return {
-    WorkerCode: '34000000002375',
-    WorkerName: '州公司管理员',
-    DepCode: '34',
-    DepName: '州公司',
+    // WorkerCode: '34000000002375',
+    // WorkerName: '州公司管理员',
+    // DepCode: '34',
+    // DepName: '州公司',
+
+    WorkerCode: '34340365007532',
+    WorkerName: '郭进文',
+    DepCode: '343403A',
+    DepName: '城关收购线',
   };
 }
